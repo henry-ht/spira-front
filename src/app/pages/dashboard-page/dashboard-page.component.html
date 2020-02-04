@@ -1,0 +1,100 @@
+<div class="row">
+    <aside class="col-md-2 border-right p-0">
+        <h3>
+            Cursos
+        </h3>
+        <ul class="list-group list-group-flush">
+            <li class="list-group-item animated fadeIn curso-pointer" [ngClass]="{'pr-3 font-weight-bold border-right': course.id == idCourseActive}"  *ngFor="let course of Courses?.data" (click)="getStudents(course)" >
+                {{course.name}}
+            </li>
+        </ul>        
+    </aside>
+    <aside class="col-md-6">
+        <h3>
+            Estudiantes
+        </h3>
+        <ul class="list-group list-group-flush">
+            <li class="list-group-item text-center animated fadeIn" *ngIf="loaderItems">
+                <i class="spinner-grow text-dark" role="status"  >
+                    <span class="sr-only">Loading...</span>
+                </i>
+            </li>
+            <li class="list-group-item animated fadeIn" *ngIf="!loaderItems && Students?.data.length == 0" >
+                <h3>
+                    Sin resultados
+                </h3>
+            </li>
+            <li class="list-group-item animated fadeIn" *ngFor="let student of Students?.data"  >
+                <div class="pull-left" >
+                    <b class="text-uppercase">
+                        {{student.name}}
+                    </b> 
+                    <span class="d-block small">
+                        {{student.email}} - {{student.phone}} 
+                    </span>
+                </div>
+                
+                <div class="pull-right btn-group">
+                    <button type="button" class="btn btn-success btn-circle btn-sm">
+                        <i (click)="setStudents(student)" class="fa fa-edit pull-right"></i> 
+                    </button>
+                    <button type="button" class="btn btn-danger btn-circle btn-sm" >
+                        <i (click)="Delete(student)" class="fa fa-trash pull-right"></i>
+                    </button>
+                    
+                </div>
+            </li>
+        </ul>  
+    </aside>
+    <aside class="col-md-4 border-left">
+        <h3>
+            Opciones
+        </h3>
+        <form  (ngSubmit)="onSubmit(studentsForm)" [formGroup]="studentsForm">
+            <div class="form-group">
+                <input type="text" name="name" [formControl]="studentsForm.controls['name']" class="form-control" autocomplete="off" placeholder="Nombre Completo" required="required">
+                <div *ngIf="studentsForm.controls.name.touched && studentsForm.controls.name.errors?.required" class="text text-danger">Nombre es requerido</div>
+            </div>
+
+            <div class="form-group">
+                <input type="phone" name="phone" [formControl]="studentsForm.controls['phone']" class="form-control" autocomplete="off" placeholder="Celular" required="required">
+                <div *ngIf="studentsForm.controls.phone.touched && studentsForm.controls.phone.errors?.required" class="text text-danger">Celular es requerido</div>
+            </div>
+
+            <div class="form-group">
+                <input type="email" name="email" [formControl]="studentsForm.controls['email']" class="form-control" autocomplete="off"  placeholder="email" required="required">
+                <div *ngIf="studentsForm.controls.email.touched && studentsForm.controls.email.errors?.email" class="text text-danger">Email invalido</div>
+            </div>
+
+            <div class="form-group" >
+                <select name="course_id"  class="form-control" required="required" [formControl]="studentsForm.controls['course_id']">
+                    <option [value]="item.id" *ngFor="let item of Courses?.data">{{item.name}}</option>
+                </select>
+            </div>
+
+            <div class="form-button">
+                <button type="submit" *ngIf="!btnUpdate" [disabled]="!studentsForm.valid || btnLoader" class="btn btn-dark">
+                  <i class="spinner-grow text-light spinner-grow-sm" role="status" *ngIf="btnLoader" >
+                    <span class="sr-only">Loading...</span>
+                  </i>
+                  <span *ngIf="!btnLoader">
+                    Enviar
+                  </span>
+                </button>
+
+                <button type="button" (click)="Edit(studentsForm)" *ngIf="btnUpdate" [disabled]="!studentsForm.valid || btnLoader" class="btn btn-primary">
+                    <i class="spinner-grow text-light spinner-grow-sm" role="status" *ngIf="btnLoader" >
+                      <span class="sr-only">Loading...</span>
+                    </i>
+                    <span *ngIf="!btnLoader">
+                      Actualizar
+                    </span>
+                  </button>
+
+                  <button type="button" (click)="resetForm()"  class="btn btn-info pull-right">
+                    Cancelar
+                  </button>
+              </div>
+        </form>
+    </aside>
+</div>
